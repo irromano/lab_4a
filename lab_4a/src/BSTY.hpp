@@ -6,13 +6,12 @@
 using namespace std;
 
 class BSTY {
-	friend class mainYahtzee;
-	//NodeT *root;
+	friend class main;			//Must Remove this Later
+	NodeT *root;
 	bool mine = true;
 	string alpha[26] = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
 
 public:
-	NodeT *root;
 	BSTY() ;
 	bool insertit(string x);
 	void adjustHeights(NodeT *n);
