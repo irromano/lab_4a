@@ -53,6 +53,21 @@ int main() {
 	cout << endl;
 	printLine();
 
+	//Testcases for remove1
+	cout << "Test Cases for remove1 method" << endl;
+	printLine();
+
+	cout << "test1 contents in order are:" << endl;
+	test1->printTreeIO();
+	cout << endl;
+	test1->remove("F");
+	cout << "test1 contents in order are now (height changed):" << endl;
+	test1->printTreeIO();
+	cout << endl;
+	printLine();
+	printLine();
+
+
 
 
 	//	string sarr[10] = {"run","tuxedo","ocelot","vast","bark","punctilios","hello","is","sibylic","go"};

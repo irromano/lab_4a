@@ -20,7 +20,47 @@ BSTY::BSTY() {
 // adjustHeights method that will update the heights of all the 
 // ancestors of the node that was just inserted.
 bool BSTY::insertit(string x) {
-
+	//NodeT *n = new NodeT;
+	int i = 0;
+	if (root == NULL) {
+		//n->data = x;
+		root = new NodeT(x);
+		i++;
+		return true;
+		//set root to new Node, with data x
+	}
+	NodeT* temp = root;
+	//root = n;
+	while (temp != NULL) {
+		if (x == temp->data) {
+			cout << x << "Already found" << endl;
+			return false;
+		}
+		if (x < temp->data) {
+			if (temp->left == NULL) {
+				temp->left = new NodeT(x);
+				temp->left->parent = temp;
+				i++;
+				adjustHeights(temp->left);
+				//NodeT *n2 = new NodeT;
+				//n2->data = x;
+				//temp->left = n2;
+				//n2->parent = temp;
+				return true;
+			}
+			temp = temp->left;
+		}
+		if (x >= temp->data) {
+			if (temp->right == NULL) {
+				temp->right = new NodeT(x);
+				temp->right->parent = temp;
+				i++;
+				adjustHeights(temp->right);
+				return true;
+			}
+			temp = temp->right;
+		}
+	}
 }
 
 // the adjustHeights method updates the heights of every ancestor of the node n.
@@ -37,6 +77,9 @@ bool BSTY::insertit(string x) {
 // ancestor is not changed.  
 void BSTY::adjustHeights(NodeT *n) {
 	NodeT *temp = n; //setting our new node's parent as the next node to check
+	if (temp->left == NULL && temp->right == NULL) {
+		temp->height = 1;
+	}
 	while (temp->parent != NULL) {
 		int oldHeight = temp->parent->height;
 		if (temp->parent->left == NULL || temp->parent->right == NULL) { //if this new node is the only child of the tree
@@ -133,7 +176,21 @@ void BSTY::myPrint(NodeT *n) {
 // NOTE: If the node can't be found, this method prints out that x can't be found.
 // if it is found, the printNode method is called for the node.  
 NodeT *BSTY::find(string x) {
-
+	NodeT *tmp = root;
+	while (tmp != NULL) {
+		if (tmp->data == x) {
+			tmp->printNode();
+			return tmp;
+		} else if (tmp->data < x) {
+			tmp = tmp->right;
+		} else if (tmp->data > x) {
+			tmp = tmp->left;
+		}
+	}
+	if (tmp == NULL) {
+		cout << x << "Not found" << endl;
+		return NULL;
+	}
 }
 
 /*************************************************************************************/
@@ -168,8 +225,8 @@ NodeT *BSTY::find(string x) {
  /* true if the removal was successful.
  */
 bool BSTY::remove(string s) {
-	//NodeT *temp = this->find(s);
-	NodeT *temp = NULL;
+	NodeT *temp = this->find(s);
+	//NodeT *temp = NULL;
 	if (temp != NULL) {							//if the sought node was found
 		if (temp->right == NULL && temp->left == NULL) {//if the node has no children
 			this->remove1(temp);
@@ -190,6 +247,7 @@ bool BSTY::remove(string s) {
  /* Make sure you check to whether n is the root or not.
  */
 void BSTY::remove1(NodeT *n) {
+	NodeT *parent = n->parent;
 	if (n->parent->left == n) {			//if n is nParent's left child
 		n->parent->left = NULL;			//set nParent's left child to NULL
 	} else {
@@ -197,6 +255,7 @@ void BSTY::remove1(NodeT *n) {
 	}
 	n->parent = NULL;
 	delete n;
+	adjustHeights(parent);
 	return;
 }
 
@@ -210,21 +269,28 @@ void BSTY::remove1(NodeT *n) {
  /* one child becomes the root.
  */
 void BSTY::remove2(NodeT *n) {
-	NodeT *parent;
+	NodeT *parent = n->parent;
 	NodeT *child;
 	if (n->left != NULL) {				//if n's child is left
-		if (n->parent->left == n) {		//if n is left
-
-		} else {
-			n->parent->right = n->left;
-		}
+		child = n->left;
+		n->left = NULL;
 	} else {							//if n's child is right
-		if (n->parent->left == n) {
-			n->parent->left = n->right;
-		} else {
-			n->parent->right = n->right;
-		}
+		child = n->right;
+		n->right = NULL;
 	}
+	child->parent = parent;
+	if (n->parent->left == n) {		//if n is left child of parent
+		parent->left = child;		//child is left child of parent
+	} else {
+		parent->right = child;
+	}
+	if (n->parent == NULL) {
+		child = this->root;
+	} else {
+		n->parent = NULL;
+	}
+	delete n;
+	return;
 }
 
 /* remove3(): called when the node to be removed has 2 children.  Takes as input the
@@ -241,32 +307,45 @@ void BSTY::remove2(NodeT *n) {
  /* Remember to take into account that the node being removed might be the root.
  */
 void BSTY::remove3(NodeT *n) {
+	NodeT *parent = n->parent;
+	NodeT *replacing = findMin(n->right);	//This will replace the deleted node
+	replacing->parent->left = NULL;			//Nulling replacing's parent's left
+	replacing->left = n->left;
+	replacing->right = n->right;
+	n->left = NULL;
+	n->right = replacing;
+	replacing->parent = n;
 
 }
 
-/* findMin(): takes as input a node, and finds the left-most descendant of its 
- /* right child.  The left-most descendent is returned.
+/* findMin(): takes as input a node, and finds the left-most descendant.
+ *   The left-most descendent is returned.
  */
 NodeT *BSTY::findMin(NodeT *n) {
+	if (n->left == NULL) {
+		return n;
+	} else {
+		return findMin(n->left);
+	}
 
 }
 
 void BSTY::myPrintEC() {
-if (root == NULL) {
-	cout << "Empty Tree" << endl;
-} else {
-	myPrintEC(root);
-	cout << endl;
-}
+	if (root == NULL) {
+		cout << "Empty Tree" << endl;
+	} else {
+		myPrintEC(root);
+		cout << endl;
+	}
 }
 void BSTY::myPrintEC(NodeT *n) {
-if (n == NULL) {
-	return;
-} else {
-	myPrintEC(n->left);
-	cout << alpha[n->data.length() - 2];
-	myPrintEC(n->right);
-}
+	if (n == NULL) {
+		return;
+	} else {
+		myPrintEC(n->left);
+		cout << alpha[n->data.length() - 2];
+		myPrintEC(n->right);
+	}
 }
 
 /************************************************************************/
