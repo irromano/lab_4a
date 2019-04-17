@@ -19,8 +19,8 @@ BSTY::BSTY() {
 // Note2: after you've inserted a new node, you should call the 
 // adjustHeights method that will update the heights of all the 
 // ancestors of the node that was just inserted.
-bool BSTY:: insertit(string x ) {
-	
+bool BSTY::insertit(string x) {
+
 }
 
 // the adjustHeights method updates the heights of every ancestor of the node n.
@@ -36,30 +36,28 @@ bool BSTY:: insertit(string x ) {
 // the loop has worked its way up to the root, or until the currently being checked
 // ancestor is not changed.  
 void BSTY::adjustHeights(NodeT *n) {
-	NodeT *temp = n;			//setting our new node's parent as the next node to check
+	NodeT *temp = n;//setting our new node's parent as the next node to check
 	while (temp->parent != NULL) {
 		int oldHeight = temp->parent->height;
-		if (temp->parent->left == NULL || temp->parent->right == NULL) {		//if this new node is the only child of the tree
-			temp->parent->height = temp->height + 1;							//parent's height is only child's height +1
+		if (temp->parent->left == NULL || temp->parent->right == NULL) {//if this new node is the only child of the tree
+			temp->parent->height = temp->height + 1;//parent's height is only child's height +1
 		} else if (temp->parent->left->height >= temp->parent->right->height) { //height of parent's left child is >= height of parent's right child
-			temp->parent->height = temp->parent->left->height + 1;				//parent's height is left child's height +1
-		} else {																//else
-			temp->parent->height = temp->parent->right->height +1;				//parent's height is right child's height +1
+			temp->parent->height = temp->parent->left->height + 1;//parent's height is left child's height +1
+		} else {														//else
+			temp->parent->height = temp->parent->right->height + 1;	//parent's height is right child's height +1
 		}
-		if (oldHeight == temp->parent->height)									//if parent's height does not change, end the function
+		if (oldHeight == temp->parent->height)//if parent's height does not change, end the function
 			return;
 		temp = temp->parent;
 	}
 	return;
-
 
 }
 
 void BSTY::printTreeIO() {
 	if (root == NULL) {
 		cout << "Empty Tree" << endl;
-	}
-	else {
+	} else {
 		printTreeIO(root);
 	}
 }
@@ -78,10 +76,9 @@ void BSTY::printTreeIO(NodeT *n) {
 }
 
 void BSTY::printTreePre() {
-	if (root == NULL ) {
+	if (root == NULL) {
 		cout << "Empty Tree" << endl;
-	}
-	else {
+	} else {
 		printTreePre(root);
 	}
 }
@@ -90,14 +87,19 @@ void BSTY::printTreePre() {
 // child.  Use the slides, but make sure you understand how a tree is traversed in
 // pre-order
 void BSTY::printTreePre(NodeT *n) {
-
+	if (n == NULL) {
+		return;
+	} else {
+		n->printNode();
+		printTreePre(n->left);
+		printTreePre(n->right);
+	}
 }
 
 void BSTY::printTreePost() {
-	if (root == NULL ) {
+	if (root == NULL) {
 		cout << "Empty Tree" << endl;
-	}
-	else {
+	} else {
 		printTreePost(root);
 		cout << endl;
 	}
@@ -107,13 +109,18 @@ void BSTY::printTreePost() {
 // Use the slides, but make sure you understand how a tree is traversed in
 // post-order
 void BSTY::printTreePost(NodeT *n) {
-
+	if (n == NULL) {
+		return;
+	} else {
+		printTreePost(n->left);
+		printTreePost(n->right);
+		n->printNode();
+	}
 }
 void BSTY::myPrint() {
-	if (root == NULL ) {
+	if (root == NULL) {
 		cout << "Empty Tree" << endl;
-	}
-	else {
+	} else {
 		myPrint(root);
 		cout << endl;
 	}
@@ -121,12 +128,11 @@ void BSTY::myPrint() {
 void BSTY::myPrint(NodeT *n) {
 	if (n == NULL) {
 		return;
-	}
-	else {
+	} else {
 		myPrint(n->left);
-		cout << n->data.length()-1;
+		cout << n->data.length() - 1;
 		if (mine) {
-			cout <<".";
+			cout << ".";
 			mine = false;
 		}
 		myPrint(n->right);
@@ -149,85 +155,84 @@ NodeT *BSTY::find(string x) {
 /* UNDERSTANDING HOW THEY WORK!!                                                     */
 /*************************************************************************************/
 /* When removing a node from a binary search tree, the resulting tree MUST BE a binary
-/* search tree.  
-/*
-/* When removing a node, there are 3 conditions:
-/* 1: when the node being removed has no children, in which case the node is deleted,
-/* the node's parent is set to NULL, and the node's parent's height is adjusted (if
-/* necessary) and heights on up are adjusted.
-/* 2: when the node being removed has one child, in which case the node's parent points
-/* to the node's child, and the node's child points to the node's parent, and the node
-/* is deleted (and the height of the parent on up as necessary is adjusted)
-/* 3: when the node has 2 children, in which case the left-most child of the node's 
-/* right child replaces the node.  
-/* A couple of notes about this one: you are replacing a node with a node that is lower
-/* down in the tree.  That means that you are, in essence, removing the node from that
-/* lower position and moving it up to the old node's location.  Thus the replacing node
-/* must be removed using 1 or 2 above (why not 3?).  The heights must be adjusted after 
-/* the replacing node is removed from its old location but before it is inserted into its 
-/* new location.  Equally, the replacing node's height must be adjusted to be the larger of
-/* its two children's heights before you adjust heights above that.  
-/*****************************************************************************************/
+ /* search tree.
+ /*
+ /* When removing a node, there are 3 conditions:
+ /* 1: when the node being removed has no children, in which case the node is deleted,
+ /* the node's parent is set to NULL, and the node's parent's height is adjusted (if
+ /* necessary) and heights on up are adjusted.
+ /* 2: when the node being removed has one child, in which case the node's parent points
+ /* to the node's child, and the node's child points to the node's parent, and the node
+ /* is deleted (and the height of the parent on up as necessary is adjusted)
+ /* 3: when the node has 2 children, in which case the left-most child of the node's
+ /* right child replaces the node.
+ /* A couple of notes about this one: you are replacing a node with a node that is lower
+ /* down in the tree.  That means that you are, in essence, removing the node from that
+ /* lower position and moving it up to the old node's location.  Thus the replacing node
+ /* must be removed using 1 or 2 above (why not 3?).  The heights must be adjusted after
+ /* the replacing node is removed from its old location but before it is inserted into its
+ /* new location.  Equally, the replacing node's height must be adjusted to be the larger of
+ /* its two children's heights before you adjust heights above that.
+ /*****************************************************************************************/
 /* remove(): takes as input a string, uses the find method to find the node in the tree that
-/* holds that string, and then calls replace1, replace2, or replace3 depending on what type
-/* of replacing should be done.  It adjusts the heights, deletes teh node, and returns 
-/* true if the removal was successful.
-*/
+ /* holds that string, and then calls replace1, replace2, or replace3 depending on what type
+ /* of replacing should be done.  It adjusts the heights, deletes teh node, and returns
+ /* true if the removal was successful.
+ */
 bool BSTY::remove(string s) {
 
 }
 
 /* remove1(): called when the node to be removed has no children. Takes as input the 
-/* node to be removed, and sets the parent of the node to point to NULL.
-/* helpful hint: if (n->parent->left == n) is true, then n is its parent's left child.
-/* Make sure you check to whether n is the root or not.
-*/
+ /* node to be removed, and sets the parent of the node to point to NULL.
+ /* helpful hint: if (n->parent->left == n) is true, then n is its parent's left child.
+ /* Make sure you check to whether n is the root or not.
+ */
 void BSTY::remove1(NodeT *n) {
 
 }
 
 /* remove2(): called when the node to be removed has 1 child only.  Takes as input
-/* the node to be removed and bypasses it by making the parent point to the node's
-/* one child, and makes the node's one child point to the node's parent.  
-/* This one needs a bunch of checking - you need to see if the node is the parent's
-/* left or right child, and you need to see if the node's child is its left or its
-/* right child.
-/* Also, make sure you check that if the node to be removed is the root, then the 
-/* one child becomes the root.
-*/ 
+ /* the node to be removed and bypasses it by making the parent point to the node's
+ /* one child, and makes the node's one child point to the node's parent.
+ /* This one needs a bunch of checking - you need to see if the node is the parent's
+ /* left or right child, and you need to see if the node's child is its left or its
+ /* right child.
+ /* Also, make sure you check that if the node to be removed is the root, then the
+ /* one child becomes the root.
+ */
 void BSTY::remove2(NodeT *n) {
 
 }
 
 /* remove3(): called when the node to be removed has 2 children.  Takes as input the
-/* node to be removed.  The node to replace the node to be removed should be the 
-/* left-most descendent of the node's right child.  That way the binary search tree
-/* properties are guaranteed to be maintained.
-/* When replacing the node to be removed with the replacing node, the replacing node
-/* is, in essence, being removed from its place in the tree, and thus replace1 or 
-/* replace2 methods should be used.
-/* The new node's parent must be set to the removed node's parent, the removed node's
-/* parent must point to the new node, the new node's left child must point to the 
-/* removed node's left child (and the child must point to the new node as a parent), 
-/* and the same for teh right child.
-/* Remember to take into account that the node being removed might be the root.
-*/
+ /* node to be removed.  The node to replace the node to be removed should be the
+ /* left-most descendent of the node's right child.  That way the binary search tree
+ /* properties are guaranteed to be maintained.
+ /* When replacing the node to be removed with the replacing node, the replacing node
+ /* is, in essence, being removed from its place in the tree, and thus replace1 or
+ /* replace2 methods should be used.
+ /* The new node's parent must be set to the removed node's parent, the removed node's
+ /* parent must point to the new node, the new node's left child must point to the
+ /* removed node's left child (and the child must point to the new node as a parent),
+ /* and the same for teh right child.
+ /* Remember to take into account that the node being removed might be the root.
+ */
 void BSTY::remove3(NodeT *n) {
 
 }
 
 /* findMin(): takes as input a node, and finds the left-most descendant of its 
-/* right child.  The left-most descendent is returned.
-*/
+ /* right child.  The left-most descendent is returned.
+ */
 NodeT *BSTY::findMin(NodeT *n) {
 
 }
 
 void BSTY::myPrintEC() {
-	if (root == NULL ) {
+	if (root == NULL) {
 		cout << "Empty Tree" << endl;
-	}
-	else {
+	} else {
 		myPrintEC(root);
 		cout << endl;
 	}
@@ -235,14 +240,12 @@ void BSTY::myPrintEC() {
 void BSTY::myPrintEC(NodeT *n) {
 	if (n == NULL) {
 		return;
-	}
-	else {
+	} else {
 		myPrintEC(n->left);
-		cout << alpha[n->data.length()-2];
+		cout << alpha[n->data.length() - 2];
 		myPrintEC(n->right);
 	}
 }
-
 
 /************************************************************************/
 
