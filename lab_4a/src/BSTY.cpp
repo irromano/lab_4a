@@ -36,13 +36,13 @@ bool BSTY::insertit(string x) {
 // the loop has worked its way up to the root, or until the currently being checked
 // ancestor is not changed.  
 void BSTY::adjustHeights(NodeT *n) {
-	NodeT *temp = n;//setting our new node's parent as the next node to check
+	NodeT *temp = n; //setting our new node's parent as the next node to check
 	while (temp->parent != NULL) {
 		int oldHeight = temp->parent->height;
-		if (temp->parent->left == NULL || temp->parent->right == NULL) {//if this new node is the only child of the tree
-			temp->parent->height = temp->height + 1;//parent's height is only child's height +1
+		if (temp->parent->left == NULL || temp->parent->right == NULL) { //if this new node is the only child of the tree
+			temp->parent->height = temp->height + 1; //parent's height is only child's height +1
 		} else if (temp->parent->left->height >= temp->parent->right->height) { //height of parent's left child is >= height of parent's right child
-			temp->parent->height = temp->parent->left->height + 1;//parent's height is left child's height +1
+			temp->parent->height = temp->parent->left->height + 1; //parent's height is left child's height +1
 		} else {														//else
 			temp->parent->height = temp->parent->right->height + 1;	//parent's height is right child's height +1
 		}
@@ -87,13 +87,7 @@ void BSTY::printTreePre() {
 // child.  Use the slides, but make sure you understand how a tree is traversed in
 // pre-order
 void BSTY::printTreePre(NodeT *n) {
-	if (n == NULL) {
-		return;
-	} else {
-		n->printNode();
-		printTreePre(n->left);
-		printTreePre(n->right);
-	}
+
 }
 
 void BSTY::printTreePost() {
@@ -109,13 +103,7 @@ void BSTY::printTreePost() {
 // Use the slides, but make sure you understand how a tree is traversed in
 // post-order
 void BSTY::printTreePost(NodeT *n) {
-	if (n == NULL) {
-		return;
-	} else {
-		printTreePost(n->left);
-		printTreePost(n->right);
-		n->printNode();
-	}
+
 }
 void BSTY::myPrint() {
 	if (root == NULL) {
@@ -180,7 +168,20 @@ NodeT *BSTY::find(string x) {
  /* true if the removal was successful.
  */
 bool BSTY::remove(string s) {
-
+	//NodeT *temp = this->find(s);
+	NodeT *temp = NULL;
+	if (temp != NULL) {							//if the sought node was found
+		if (temp->right == NULL && temp->left == NULL) {//if the node has no children
+			this->remove1(temp);
+		} else if (temp->right == NULL || temp->left == NULL) {	//if the node has 1 child
+			this->remove2(temp);
+		} else {									//if the node has 2 children
+			this->remove3(temp);
+		}
+		return true;									//the node was removed
+	} else {
+		return false;									//no node was deleted
+	}
 }
 
 /* remove1(): called when the node to be removed has no children. Takes as input the 
@@ -189,7 +190,14 @@ bool BSTY::remove(string s) {
  /* Make sure you check to whether n is the root or not.
  */
 void BSTY::remove1(NodeT *n) {
-
+	if (n->parent->left == n) {			//if n is nParent's left child
+		n->parent->left = NULL;			//set nParent's left child to NULL
+	} else {
+		n->parent->right = NULL;		//set nParent's right child to NULL
+	}
+	n->parent = NULL;
+	delete n;
+	return;
 }
 
 /* remove2(): called when the node to be removed has 1 child only.  Takes as input
@@ -202,7 +210,21 @@ void BSTY::remove1(NodeT *n) {
  /* one child becomes the root.
  */
 void BSTY::remove2(NodeT *n) {
+	NodeT *parent;
+	NodeT *child;
+	if (n->left != NULL) {				//if n's child is left
+		if (n->parent->left == n) {		//if n is left
 
+		} else {
+			n->parent->right = n->left;
+		}
+	} else {							//if n's child is right
+		if (n->parent->left == n) {
+			n->parent->left = n->right;
+		} else {
+			n->parent->right = n->right;
+		}
+	}
 }
 
 /* remove3(): called when the node to be removed has 2 children.  Takes as input the
@@ -230,21 +252,21 @@ NodeT *BSTY::findMin(NodeT *n) {
 }
 
 void BSTY::myPrintEC() {
-	if (root == NULL) {
-		cout << "Empty Tree" << endl;
-	} else {
-		myPrintEC(root);
-		cout << endl;
-	}
+if (root == NULL) {
+	cout << "Empty Tree" << endl;
+} else {
+	myPrintEC(root);
+	cout << endl;
+}
 }
 void BSTY::myPrintEC(NodeT *n) {
-	if (n == NULL) {
-		return;
-	} else {
-		myPrintEC(n->left);
-		cout << alpha[n->data.length() - 2];
-		myPrintEC(n->right);
-	}
+if (n == NULL) {
+	return;
+} else {
+	myPrintEC(n->left);
+	cout << alpha[n->data.length() - 2];
+	myPrintEC(n->right);
+}
 }
 
 /************************************************************************/
