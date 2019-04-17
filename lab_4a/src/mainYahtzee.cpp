@@ -53,6 +53,13 @@ int main() {
 	cout << endl;
 	printLine();
 
+	//test1->root->right->right->left = new NodeT("G");
+	//This should print |B, 1||A, 4||D, 1||C, 3||G, 1||E, 2||F, 1|
+	cout << "test1 contents in order are now (height changed):" << endl;
+	test1->printTreeIO();
+	cout << endl;
+	printLine();
+
 	//Testcases for remove1
 	cout << "Test Cases for remove1 method" << endl;
 	printLine();
@@ -60,7 +67,7 @@ int main() {
 	cout << "test1 contents in order are:" << endl;
 	test1->printTreeIO();
 	cout << endl;
-	test1->remove("F");
+	test1->remove("E");
 	cout << "test1 contents in order are now (height changed):" << endl;
 	test1->printTreeIO();
 	cout << endl;
@@ -70,8 +77,8 @@ int main() {
 
 
 
-	//	string sarr[10] = {"run","tuxedo","ocelot","vast","bark","punctilios","hello","is","sibylic","go"};
-//	treePuzzle(10,sarr,0);
+	string sarr[10] = {"run","tuxedo","ocelot","vast","bark","punctilios","hello","is","sibylic","go"};
+	treePuzzle(10,sarr,0);
 	//FOR EXTRA CREDIT
 	//string sarr2[13] = {"xray","jack","superthriller","fa","noon","muddle","kindergartener","zoogeographical","window","dandelion","youthsploitation","byte","apple"};
 	//treePuzzle(13,sarr2 ,1);
