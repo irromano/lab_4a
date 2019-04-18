@@ -16,39 +16,29 @@ int main() {
 	cout << "Test Cases for adjustHeights method" << endl;
 	printLine();
 	BSTY *test1 = new BSTY();
-	test1->root = new NodeT("A");
-	test1->root->left = new NodeT("B");
-	test1->root->right = new NodeT("C");
-	test1->root->right->left = new NodeT("D");
-	test1->root->left->parent = test1->root;
-	test1->root->right->parent = test1->root;
-	test1->root->right->left->parent = test1->root->right;
+	test1->insertit("B");
+	test1->insertit("A");
+	test1->insertit("D");
+	test1->insertit("C");
 
-	test1->adjustHeights(test1->root->right->left);
-	test1->adjustHeights(test1->root->left);
-
-	//This should print |B, 1||A, 3||D, 1||C, 2|
+	//This should print |A, 1||B, 3||C, 1||D, 2|
 	cout << "test1 contents in order are:" << endl;
 	test1->printTreeIO();
 	cout << endl;
 
-	//Adding another node to C's right
-	test1->root->right->right = new NodeT("E");
-	test1->root->right->right->parent = test1->root->right;
-	test1->adjustHeights(test1->root->right->right);
+	//Adding another node to D's right
+	test1->insertit("F");
 
-	//This should print |B, 1||A, 3||D, 1||C, 2||E, 1|
-	cout << "test1 contents in order are now (height unchanged):" << endl;
+	//This should print |A, 1||B, 3||D, 1||C, 2||F, 1|
+	cout << "Added an 'F', test1 contents in order are now (height unchanged):" << endl;
 	test1->printTreeIO();
 	cout << endl;
 
-	//Adding another node to E's right
-	test1->root->right->right->right = new NodeT("F");
-	test1->root->right->right->right->parent = test1->root->right->right;
-	test1->adjustHeights(test1->root->right->right->right);
+	//Adding another node to F's left
+	test1->insertit("E");
 
-	//This should print |B, 1||A, 4||D, 1||C, 3||E, 2||F, 1|
-	cout << "test1 contents in order are now (height changed):" << endl;
+	//This should print |A, 1||B, 4||C, 1||D, 3||E, 1||F, 2|
+	cout << "Added an 'E', test1 contents in order are now (height changed):" << endl;
 	test1->printTreeIO();
 	cout << endl;
 	printLine();
