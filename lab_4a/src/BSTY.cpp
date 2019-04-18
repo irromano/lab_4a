@@ -309,19 +309,38 @@ void BSTY::remove2(NodeT *n) {
  */
 void BSTY::remove3(NodeT *n) {
 	NodeT *parent = n->parent;
-	NodeT *replacing = findMin(n->right);	//This will replace the deleted node
+	NodeT *child = findMin(n->right);	//This will replace the deleted node
+	NodeT *replacing = new NodeT(child->data);
 
 	replacing->left = n->left;
 	replacing->right = n->right;
+	n->left->parent = replacing;
+	n->right->parent = replacing;
 	n->left = NULL;
 	n->right = NULL;
-	replacing->parent = n;
+
+	if (n->parent == NULL) {
+		this->root = replacing;
+	} else if (n->parent->left == n) {
+		parent->left = replacing;
+	} else {
+		parent->right = replacing;
+	}
+
+	replacing->parent = parent;
 	n->parent = NULL;
 
-	if (replacing->right == NULL && replacing->left == NULL) {//if replacing has no children
-		this->remove1(findMin(replacing->right));
-	} else {	//if replacing has 1 child
-		this->remove2(findMin(replacing->right));
+//	if (replacing->right == NULL && replacing->left == NULL) {//if replacing has no children
+//		this->remove1(findMin(replacing->right));
+//	} else {	//if replacing has 1 child
+//		this->remove2(findMin(replacing->right));
+//	}
+
+	adjustHeights(child);
+	if (child->left == NULL && child->right == NULL) {
+		remove1(child);
+	} else {
+		remove2(child);
 	}
 
 	delete n;
