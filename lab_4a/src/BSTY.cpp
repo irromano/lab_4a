@@ -42,10 +42,6 @@ bool BSTY::insertit(string x) {
 				temp->left->parent = temp;
 				i++;
 				adjustHeights(temp->left);
-				//NodeT *n2 = new NodeT;
-				//n2->data = x;
-				//temp->left = n2;
-				//n2->parent = temp;
 				return true;
 			}
 			temp = temp->left;
@@ -130,7 +126,13 @@ void BSTY::printTreePre() {
 // child.  Use the slides, but make sure you understand how a tree is traversed in
 // pre-order
 void BSTY::printTreePre(NodeT *n) {
-
+	if (n == NULL) {
+		return;
+	} else {
+		n->printNode();
+		printTreePre(n->left);
+		printTreePre(n->right);
+	}
 }
 
 void BSTY::printTreePost() {
@@ -146,7 +148,13 @@ void BSTY::printTreePost() {
 // Use the slides, but make sure you understand how a tree is traversed in
 // post-order
 void BSTY::printTreePost(NodeT *n) {
-
+	if (n == NULL) {
+		return;
+	} else {
+		printTreePost(n->left);
+		printTreePost(n->right);
+		n->printNode();
+	}
 }
 void BSTY::myPrint() {
 	if (root == NULL) {
@@ -309,17 +317,17 @@ void BSTY::remove2(NodeT *n) {
  */
 void BSTY::remove3(NodeT *n) {
 	NodeT *parent = n->parent;
-	NodeT *child = findMin(n->right);	//This will replace the deleted node
-	NodeT *replacing = new NodeT(child->data);
+	NodeT *child = findMin(n->right);	//This hold the old spot of the replacing node
+	NodeT *replacing = new NodeT(child->data);	//this will replace the deleted node
 
-	replacing->left = n->left;
+	replacing->left = n->left;			//rewiring replacing node to be deleted node
 	replacing->right = n->right;
 	n->left->parent = replacing;
 	n->right->parent = replacing;
 	n->left = NULL;
 	n->right = NULL;
 
-	if (n->parent == NULL) {
+	if (n->parent == NULL) {			//seeing if deleted node was the root
 		this->root = replacing;
 	} else if (n->parent->left == n) {
 		parent->left = replacing;
